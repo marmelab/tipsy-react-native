@@ -1,6 +1,10 @@
+import 'react-native-gesture-handler';
 import React from "react";
 import { Platform, StyleSheet, View } from "react-native";
-import MainScreen from "./domains/main/main";
+import MainScreen from "./domains/main/mainSreen";
+import GameScreen from './domains/game/gameScreen';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 
 const backgroundColor = "#fff";
 const styles = StyleSheet.create({
@@ -13,10 +17,21 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? 25 : 0,
   },
 });
+
+const Stack = createStackNavigator()
 export default function App() {
   return (
-    <View style={styles.container}>
-      <MainScreen></MainScreen>
-    </View>
+    <NavigationContainer style={styles.container}>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={MainScreen}
+        />
+        <Stack.Screen
+          name="Game"
+          component={GameScreen}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
