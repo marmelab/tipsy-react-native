@@ -1,0 +1,12 @@
+sudo: required
+language: node_js
+
+node_js:
+  - "15"
+install: make install
+
+script: make test
+
+branches:
+  only:
+    - main
