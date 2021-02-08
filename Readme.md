@@ -22,7 +22,6 @@ make install
 ```
 make run
 ```
-
 ## How to run tests
 
 ```
