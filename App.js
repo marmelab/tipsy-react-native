@@ -1,6 +1,6 @@
 import React from "react";
 import { Platform, StyleSheet, View } from "react-native";
-import { MainScreen } from "./domains/main/main";
+import MainScreen from "./domains/main/main";
 
 const backgroundColor = "#fff";
 const styles = StyleSheet.create({
