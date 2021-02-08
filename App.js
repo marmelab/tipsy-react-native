@@ -1,11 +1,11 @@
 import React from 'react'
-import { Platform, SafeAreaView, StyleSheet } from 'react-native'
+import { Platform, StyleSheet, View } from 'react-native'
 import { MainScreen } from './views/main/main'
 
 export default function App () {
-  return (<SafeAreaView style={styles.container}>
+  return (<View style={styles.container}>
     <MainScreen></MainScreen>
-  </SafeAreaView>
+  </View>
   )
 }
 
