@@ -1,14 +1,12 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import { Platform, SafeAreaView, StyleSheet } from 'react-native'
+import { MainScreen } from './views/main/main'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+export default function App () {
+  return (<SafeAreaView style={styles.container}>
+    <MainScreen></MainScreen>
+  </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -17,5 +15,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-});
+    // To avoid overlapping status bar on android : https://stackoverflow.com/questions/51289587/react-native-how-to-use-safeareaview-for-android-notch-devices/55017347
+    paddingTop: Platform.OS === 'android' ? 25 : 0
+  }
+})
