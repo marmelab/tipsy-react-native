@@ -2,9 +2,9 @@ import React from "react";
 import { FlatList, TouchableOpacity, Text, View } from "react-native";
 import PropTypes from "prop-types";
 
-const PendingGame = ({ item, joinGame }) => {
+const PendingGame = ({ item }) => {
     return (
-        <TouchableOpacity onPress={() => joinGame(item.id)}>
+        <TouchableOpacity>
             <Text>Game {item.id}</Text>
         </TouchableOpacity>
     );
