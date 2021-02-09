@@ -18,11 +18,15 @@ const GameScreen = ({ route }) => {
         fetch(
             "http://ec2-3-250-16-46.eu-west-1.compute.amazonaws.com:8080/game",
             requestOptions
-        ).then((res) => {
-            setIsLoaded(true);
-            setGame(res);
-        });
-    }, [playerName, route.params.playerName]);
+        )
+            .then((res) => {
+                return res.json();
+            })
+            .then((game) => {
+                setIsLoaded(true);
+                setGame(game);
+            });
+    }, [playerName, game, route.params.playerName]);
     if (!isLoaded) {
         return <ActivityIndicator size="large" />;
     }
@@ -31,7 +35,7 @@ const GameScreen = ({ route }) => {
             <TextInput>{playerName}</TextInput>
             <TextInput>Game : {game.id}</TextInput>
             <TextInput>
-                Link to join :
+                Invitation link :
                 http://ec2-3-250-16-46.eu-west-1.compute.amazonaws.com:8080/game/
                 {game.id}/join
             </TextInput>
