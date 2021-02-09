@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PlayerInputName from "./PlayerNameInput.jsx";
-import Welcome from "./components/Welcome.jsx";
+import Welcome from "./Welcome.jsx";
 
 
 export default MainScreen = ({ navigation }) => {
