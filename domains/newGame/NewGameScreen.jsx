@@ -3,13 +3,13 @@ import { ActivityIndicator, TextInput, View } from "react-native";
 import PropTypes from "prop-types";
 import Game from "./Game.jsx";
 
-const GameScreen = ({ route }) => {
+const NewGameScreen = ({ route }) => {
     const [game, setGame] = useState();
     const [error, setError] = useState();
     const [gameState, setGameState] = useState("loading");
     const { playerName } = route.params;
     useEffect(() => {
-        if (!game) {
+        if (gameState === "loading") {
             const requestOptions = {
                 method: "POST",
                 headers: {
@@ -55,8 +55,8 @@ const GameScreen = ({ route }) => {
     }
 };
 
-GameScreen.propTypes = {
+NewGameScreen.propTypes = {
     route: PropTypes.object.isRequired,
 };
 
-export default GameScreen;
+export default NewGameScreen;
