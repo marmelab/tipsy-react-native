@@ -6,7 +6,7 @@ import Game from "./Game.jsx";
 const GameScreen = ({ route }) => {
     const [game, setGame] = useState();
     const [error, setError] = useState();
-    const [loadingState, setLoadingState] = useState("loading");
+    const [gameState, setGameState] = useState("loading");
     const { playerName } = route.params;
     useEffect(() => {
         if (!game) {
@@ -28,16 +28,16 @@ const GameScreen = ({ route }) => {
                         return Promise.reject(error);
                     }
                     setGame(data);
-                    setLoadingState("loaded");
+                    setGameState("loaded");
                 })
                 .catch((err) => {
                     setError(err);
-                    setLoadingState("error");
+                    setGameState("error");
                 });
         }
     }, [playerName, game]);
 
-    switch (loadingState) {
+    switch (gameState) {
         case "error":
             return (
                 <View>
