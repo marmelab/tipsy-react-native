@@ -1,47 +1,58 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, TextInput, View } from "react-native";
 import PropTypes from "prop-types";
+import Game from "./Game.jsx";
 
 const GameScreen = ({ route }) => {
-    const [playerName, setPlayerName] = useState("");
-    const [game, setGame] = useState({});
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [game, setGame] = useState();
+    const [error, setError] = useState();
+    const [loadingState, setLoadingState] = useState("loading");
+    const { playerName } = route.params;
     useEffect(() => {
-        setPlayerName(route.params.playerName);
-        const requestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ playerName }),
-        };
-        fetch(
-            "http://ec2-3-250-16-46.eu-west-1.compute.amazonaws.com:8080/game",
-            requestOptions
-        )
-            .then((res) => {
-                return res.json();
-            })
-            .then((game) => {
-                setIsLoaded(true);
-                setGame(game);
-            });
-    }, [playerName, game, route.params.playerName]);
-    if (!isLoaded) {
-        return <ActivityIndicator size="large" />;
+        if (!game) {
+            const requestOptions = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ playerName }),
+            };
+            fetch(
+                "http://ec2-3-250-16-46.eu-west-1.compute.amazonaws.com:8080/game",
+                requestOptions
+            )
+                .then(async (res) => {
+                    const data = await res.json();
+                    if (!res.ok) {
+                        const error = (data && data.message) || res.status;
+                        return Promise.reject(error);
+                    }
+                    setGame(data);
+                    setLoadingState("loaded");
+                })
+                .catch((err) => {
+                    setError(err);
+                    setLoadingState("error");
+                });
+        }
+    }, [playerName, game]);
+
+    switch (loadingState) {
+        case "error":
+            return (
+                <View>
+                    <TextInput>{{ error }}</TextInput>
+                </View>
+            );
+        case "loaded":
+            return <Game playerName={playerName} game={game}></Game>;
+        default:
+            return (
+                <View>
+                    <ActivityIndicator size="large" />
+                </View>
+            );
     }
-    return (
-        <View>
-            <TextInput>{playerName}</TextInput>
-            <TextInput>Game : {game.id}</TextInput>
-            <TextInput>
-                Invitation link :
-                http://ec2-3-250-16-46.eu-west-1.compute.amazonaws.com:8080/game/
-                {game.id}/join
-            </TextInput>
-            <TextInput>Waiting for opponent</TextInput>
-        </View>
-    );
 };
 
 GameScreen.propTypes = {
