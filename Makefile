@@ -8,3 +8,6 @@ run:
 
 test:
 	yarn test
+
+lint:
+	yarn lint

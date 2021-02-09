@@ -1,21 +1,37 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import 'react-native-gesture-handler';
+import React from "react";
+import { Platform, StyleSheet, View } from "react-native";
+import MainScreen from "./domains/home/MainSreen";
+import GameScreen from './domains/game/GameScreen';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-
+const backgroundColor = "#fff";
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        flex: 1,
+        backgroundColor,
+        alignItems: "center",
+        justifyContent: "center",
+        // To avoid overlapping status bar on android : https://stackoverflow.com/questions/51289587/react-native-how-to-use-safeareaview-for-android-notch-devices/55017347
+        paddingTop: Platform.OS === "android" ? 25 : 0,
+    },
 });
+
+const Stack = createStackNavigator()
+export default App = () => {
+    return (
+        <NavigationContainer style={styles.container}>
+            <Stack.Navigator>
+                <Stack.Screen
+                    name="Home"
+                    component={MainScreen}
+                />
+                <Stack.Screen
+                    name="Game"
+                    component={GameScreen}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+}
