@@ -7,10 +7,11 @@ const JoinGameScreen = ({ playerName }) => {
     const [pendingGames, setPendingGames] = useState();
     const [error, setError] = useState();
     const [loadingPendingGamesState, setLoadingPendingGamesState] = useState(
-        "loading"
+        "pending"
     );
     useEffect(() => {
-        if (loadingPendingGamesState === "loading") {
+        if (loadingPendingGamesState === "pending") {
+            setLoadingPendingGamesState("loading");
             fetch(
                 "http://ec2-3-250-16-46.eu-west-1.compute.amazonaws.com:8080/game/pending"
             )

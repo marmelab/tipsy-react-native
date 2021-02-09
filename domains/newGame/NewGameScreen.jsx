@@ -6,10 +6,11 @@ import Game from "./Game.jsx";
 const NewGameScreen = ({ route }) => {
     const [game, setGame] = useState();
     const [error, setError] = useState();
-    const [gameState, setGameState] = useState("loading");
+    const [gameState, setGameState] = useState("pending");
     const { playerName } = route.params;
     useEffect(() => {
-        if (gameState === "loading") {
+        if (gameState === "pending") {
+            setGameState("loading");
             const requestOptions = {
                 method: "POST",
                 headers: {

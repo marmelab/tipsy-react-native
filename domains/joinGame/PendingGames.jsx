@@ -2,12 +2,20 @@ import React from "react";
 import { FlatList, TouchableOpacity, Text, View } from "react-native";
 import PropTypes from "prop-types";
 
-const PendingGames = ({ pendingGames }) => {
-    const renderPendingGame = ({ item }) => (
-        <TouchableOpacity>
+const PendingGame = ({ item, joinGame }) => {
+    return (
+        <TouchableOpacity onPress={() => joinGame(item.id)}>
             <Text>Game {item.id}</Text>
         </TouchableOpacity>
     );
+};
+PendingGame.propTypes = {
+    item: PropTypes.object,
+    joinGame: PropTypes.func,
+};
+
+const PendingGames = ({ pendingGames }) => {
+    const renderPendingGame = ({ item }) => <PendingGame item={item} />;
     return (
         <View>
             <FlatList
@@ -22,6 +30,6 @@ const PendingGames = ({ pendingGames }) => {
 export default PendingGames;
 
 PendingGames.propTypes = {
-    playerName: PropTypes.string,
-    pendingGames: PropTypes.number,
+    pendingGames: PropTypes.array,
+    joinGame: PropTypes.func,
 };
