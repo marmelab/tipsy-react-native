@@ -2,7 +2,7 @@ import { Button, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-export default function PlayerInputName(props) {
+export default PlayerInputName = (props) => {
     const [playerName, updatePlayerName] = useState("");
     function setPlayerName() {
         props.setPlayerName(playerName);

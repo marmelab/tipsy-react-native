@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, TextInput, View } from "react-native";
 
-export default function GameScreen({ navigation, route }) {
+export default GameScreen = ({ navigation, route }) => {
 
 
     return (

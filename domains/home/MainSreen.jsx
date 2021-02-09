@@ -3,7 +3,7 @@ import PlayerInputName from "./PlayerNameInput.jsx";
 import Welcome from "./components/Welcome.jsx";
 
 
-export default function MainScreen({ navigation }) {
+export default MainScreen = ({ navigation }) => {
     const [playerName, setPlayerName] = useState("");
 
     if (!playerName) {

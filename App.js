@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 });
 
 const Stack = createStackNavigator()
-export default function App() {
+export default App = () => {
     return (
         <NavigationContainer style={styles.container}>
             <Stack.Navigator>

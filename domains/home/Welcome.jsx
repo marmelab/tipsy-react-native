@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 
 
 
-function createGame(playerName, navigation) {
+createGame = (playerName, navigation) => {
     navigation.navigate('Game', { playerName })
 }
-export default function Welcome(props) {
+export default Welcome = (props) => {
     return (
         <View>
             <Text>Welcome {props.playerName}</Text>
