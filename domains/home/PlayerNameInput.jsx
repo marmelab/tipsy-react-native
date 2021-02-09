@@ -2,20 +2,18 @@ import { Button, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-export default PlayerInputName = (props) => {
+export default PlayerInputName = ({ setPlayerName }) => {
     const [playerName, updatePlayerName] = useState("");
-    function setPlayerName() {
-        props.setPlayerName(playerName);
-    }
+
     return (
         <View>
             <TextInput
                 placeholder="Player name"
                 onChangeText={updatePlayerName}
             ></TextInput>
-            <Button title="setName" disabled={!playerName} onPress={setPlayerName}>
+            <Button title="setName" disabled={!playerName} onPress={() => setPlayerName(playerName)}>
                 Validate
-      </Button>
+            </Button>
         </View>
     );
 }

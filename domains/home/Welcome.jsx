@@ -4,14 +4,11 @@ import PropTypes from "prop-types";
 
 
 
-createGame = (playerName, navigation) => {
-    navigation.navigate('Game', { playerName })
-}
-export default Welcome = (props) => {
+export default Welcome = ({playerName, navigation}) => {
     return (
         <View>
-            <Text>Welcome {props.playerName}</Text>
-            <Button title="New game" onPress={() => createGame(props.playerName, props.navigation)}>New game?</Button>
+            <Text>Welcome {playerName}</Text>
+            <Button title="New game" onPress={() => navigation.navigate('Game', { playerName })}>New game?</Button>
             <Button title="Join game">Join game</Button>
         </View>
     );
