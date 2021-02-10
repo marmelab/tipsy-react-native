@@ -41,7 +41,7 @@ const GameScreen = ({ route }) => {
     }, [gameState, setGameState, setError, setGame]);
     useEffect(() => {
         const updateGame = setInterval(function () {
-            if (gameState === "pending") {
+            if (gameState === "loaded") {
                 fetch(CONSTANTS.BASE_URL + "/game/" + gameId)
                     .then(async (res) => {
                         const data = await res.json();
@@ -50,7 +50,6 @@ const GameScreen = ({ route }) => {
                             return Promise.reject(error);
                         }
                         setGame(data);
-                        setGameState("loaded");
                     })
                     .catch((err) => {
                         setError(err);
