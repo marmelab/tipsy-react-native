@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import GameStatus from "./GameStatus.jsx";
 import PropTypes from "prop-types";
 import CONSTANTS from "../../const";
 
@@ -84,57 +85,67 @@ const Game = ({ playerName, game }) => {
     }
     return (
         <View style={styles.game}>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => tilt("west")}
+            <GameStatus game={game} playerName={playerName}></GameStatus>
+            <View
+                style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                }}
             >
-                <Text>Left</Text>
-            </TouchableOpacity>
-            <View style={styles.board}>
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => tilt("north")}
+                    onPress={() => tilt("west")}
                 >
-                    <Text>Up</Text>
+                    <Text>Left</Text>
                 </TouchableOpacity>
-                {boardObstacles.map((row, y) => {
-                    return (
-                        <View key={"row" + y} style={styles.row}>
-                            {row.map((obstacle, x) => {
-                                return (
-                                    <View
-                                        key={"cell" + x + y}
-                                        style={
-                                            obstacle
-                                                ? styles.obstacle
-                                                : styles.cell
-                                        }
-                                    >
-                                        <Puck
-                                            x={x}
-                                            y={y}
-                                            pucks={game.pucks}
-                                        ></Puck>
-                                    </View>
-                                );
-                            })}
-                        </View>
-                    );
-                })}
+                <View style={styles.board}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => tilt("north")}
+                    >
+                        <Text>Up</Text>
+                    </TouchableOpacity>
+                    {boardObstacles.map((row, y) => {
+                        return (
+                            <View key={"row" + y} style={styles.row}>
+                                {row.map((obstacle, x) => {
+                                    return (
+                                        <View
+                                            key={"cell" + x + y}
+                                            style={
+                                                obstacle
+                                                    ? styles.obstacle
+                                                    : styles.cell
+                                            }
+                                        >
+                                            <Puck
+                                                x={x}
+                                                y={y}
+                                                pucks={game.pucks}
+                                            ></Puck>
+                                        </View>
+                                    );
+                                })}
+                            </View>
+                        );
+                    })}
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => tilt("south")}
+                    >
+                        <Text>Down</Text>
+                    </TouchableOpacity>
+                </View>
+
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => tilt("south")}
+                    onPress={() => tilt("east")}
                 >
-                    <Text>Down</Text>
+                    <Text>Right</Text>
                 </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => tilt("east")}
-            >
-                <Text>Right</Text>
-            </TouchableOpacity>
         </View>
     );
 };
