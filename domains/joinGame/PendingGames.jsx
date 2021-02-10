@@ -12,6 +12,7 @@ const PendingGame = ({ item, joinGame }) => {
 PendingGame.propTypes = {
     item: PropTypes.object,
     joinGame: PropTypes.func,
+    playerName: PropTypes.string,
 };
 const PendingGames = ({ pendingGames, joinGame }) => {
     const renderPendingGame = ({ item }) => (

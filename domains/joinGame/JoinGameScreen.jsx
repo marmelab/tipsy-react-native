@@ -4,7 +4,8 @@ import PropTypes from "prop-types";
 import PendingGames from "./PendingGames.jsx";
 import CONSTANTS from "../../const";
 
-const JoinGameScreen = ({ playerName, navigation }) => {
+const JoinGameScreen = ({ route, navigation }) => {
+    const { playerName } = route.params;
     const [pendingGames, setPendingGames] = useState();
     const [error, setError] = useState();
     const [loadingPendingGamesState, setLoadingPendingGamesState] = useState(
@@ -50,7 +51,7 @@ const JoinGameScreen = ({ playerName, navigation }) => {
                 }
                 return navigation.navigate("Game", { playerName, gameId });
             })
-            .catch(() => {
+            .catch((error) => {
                 setLoadingPendingGamesState("error");
             });
     };
@@ -59,7 +60,7 @@ const JoinGameScreen = ({ playerName, navigation }) => {
         case "error":
             return (
                 <View>
-                    <Text>{error.message}</Text>
+                    <Text>error</Text>
                 </View>
             );
         case "loaded":
@@ -67,6 +68,7 @@ const JoinGameScreen = ({ playerName, navigation }) => {
                 <View>
                     <PendingGames
                         pendingGames={pendingGames}
+                        playersName={playerName}
                         joinGame={joinGame}
                     ></PendingGames>
                 </View>
@@ -81,7 +83,7 @@ const JoinGameScreen = ({ playerName, navigation }) => {
 };
 
 JoinGameScreen.propTypes = {
-    playerName: PropTypes.string,
+    route: PropTypes.object.isRequired,
     navigation: PropTypes.object.isRequired,
 };
 export default JoinGameScreen;
