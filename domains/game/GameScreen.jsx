@@ -39,6 +39,30 @@ const GameScreen = ({ route }) => {
                 });
         }
     }, [gameState, setGameState, setError, setGame]);
+    useEffect(() => {
+        const updateGame = setInterval(function () {
+            if (gameState === "pending") {
+                fetch(CONSTANTS.BASE_URL + "/game/" + gameId)
+                    .then(async (res) => {
+                        const data = await res.json();
+                        if (!res.ok) {
+                            const error = (data && data.message) || res.status;
+                            return Promise.reject(error);
+                        }
+                        setGame(data);
+                        setGameState("loaded");
+                    })
+                    .catch((err) => {
+                        setError(err);
+                        setGameState("error");
+                    });
+            }
+        }, 2000);
+
+        return () => {
+            clearInterval(updateGame);
+        };
+    }, [gameState, setGameState, setError, setGame]);
 
     switch (gameState) {
         case "loaded":
