@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import PropTypes from "prop-types";
 
 const boardObstacles = [
@@ -36,23 +36,31 @@ Puck.propTypes = {
 };
 
 const Game = ({ playerName, game }) => {
+    const tilt = (direction) => {
+        console.log(direction);
+    };
     return (
         <View
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+            style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "row",
+            }}
         >
-            <Text>
-                Game {game.id}, you are {playerName}
-            </Text>
-            {game.players.map((player) => {
-                return (
-                    <Text key={player.name}>
-                        {`${player.name} is ${
-                            player.current ? "playing" : "waiting"
-                        }`}
-                    </Text>
-                );
-            })}
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => tilt("left")}
+            >
+                <Text>Left</Text>
+            </TouchableOpacity>
             <View style={styles.board}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => tilt("up")}
+                >
+                    <Text>Up</Text>
+                </TouchableOpacity>
                 {boardObstacles.map((row, y) => {
                     return (
                         <View
@@ -70,8 +78,8 @@ const Game = ({ playerName, game }) => {
                                         key={"cell" + x + y}
                                         style={{
                                             flex: 1,
-                                            width: 10,
-                                            height: 45,
+                                            width: 20,
+                                            height: 40,
                                             margin: 3,
                                             backgroundColor: obstacle
                                                 ? "black"
@@ -89,7 +97,20 @@ const Game = ({ playerName, game }) => {
                         </View>
                     );
                 })}
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => tilt("down")}
+                >
+                    <Text>Down</Text>
+                </TouchableOpacity>
             </View>
+
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => tilt("right")}
+            >
+                <Text>Right</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -102,8 +123,8 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
     },
     board: {
-        width: 350,
-        height: 350,
+        width: 330,
+        height: 330,
         backgroundColor: "steelblue",
     },
     container: {
