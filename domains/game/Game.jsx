@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import PropTypes from "prop-types";
 import CONSTANTS from "../../const";
@@ -38,30 +38,43 @@ Puck.propTypes = {
 
 const Game = ({ playerName, game }) => {
     const [error, setError] = useState();
+    const [tiltState, setTiltState] = useState();
 
-    const tilt = (direction) => {
-        direction;
-        const requestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ playerName, direction }),
-        };
-        fetch(CONSTANTS.BASE_URL + "/game/" + game.id + "/tilt", requestOptions)
-            .then(async (res) => {
-                if (!res.ok) {
-                    return Promise.reject(
-                        new Error(
-                            "error on requesting /game/" + game.id + "/tilt"
-                        )
-                    );
-                }
-            })
-            .catch((error) => {
-                setError(error);
-            });
-    };
+    const tilt = useCallback(
+        (direction) => {
+            if (tiltState === "loading") {
+                return;
+            }
+            const requestOptions = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ playerName, direction }),
+            };
+            setTiltState("loading");
+            fetch(
+                CONSTANTS.BASE_URL + "/game/" + game.id + "/tilt",
+                requestOptions
+            )
+                .then(async (res) => {
+                    if (!res.ok) {
+                        return Promise.reject(
+                            new Error(
+                                "error on requesting /game/" + game.id + "/tilt"
+                            )
+                        );
+                    }
+                })
+                .catch((error) => {
+                    setError(error);
+                })
+                .then(() => {
+                    setTiltState("pending");
+                });
+        },
+        [tiltState, game.id, playerName, setTiltState, setError]
+    );
     if (error) {
         return (
             <View>
