@@ -3,6 +3,19 @@ import { ActivityIndicator, Text, View } from "react-native";
 import PropTypes from "prop-types";
 import CONSTANTS from "../../const";
 
+const Redirect = ({ navigation, playerName, gameId }) => {
+    useEffect(() => {
+        navigation.navigate("Game", { playerName, gameId });
+    });
+    return null;
+};
+
+Redirect.propTypes = {
+    navigation: PropTypes.object.isRequired,
+    playerName: PropTypes.string,
+    gameId: PropTypes.number,
+};
+
 const NewGameScreen = ({ route, navigation }) => {
     const [game, setGame] = useState();
     const [error, setError] = useState();
@@ -43,8 +56,13 @@ const NewGameScreen = ({ route, navigation }) => {
                 </View>
             );
         case "loaded":
-            navigation.navigate("Game", { playerName, gameId: game.id });
-            return null;
+            return (
+                <Redirect
+                    playerName={playerName}
+                    gameId={game.id}
+                    navigation={navigation}
+                />
+            );
         default:
             return (
                 <View>

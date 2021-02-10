@@ -52,6 +52,7 @@ const JoinGameScreen = ({ route, navigation }) => {
                 return navigation.navigate("Game", { playerName, gameId });
             })
             .catch((error) => {
+                setError(error);
                 setLoadingPendingGamesState("error");
             });
     };
@@ -60,7 +61,7 @@ const JoinGameScreen = ({ route, navigation }) => {
         case "error":
             return (
                 <View>
-                    <Text>error</Text>
+                    <Text>error.message</Text>
                 </View>
             );
         case "loaded":

@@ -1,5 +1,5 @@
 import React from "react";
-import { TextInput, View, StyleSheet, Platform } from "react-native";
+import { Text, View, StyleSheet, Platform } from "react-native";
 import CONSTANTS from "../../const";
 import PropTypes from "prop-types";
 
@@ -19,17 +19,17 @@ const styles = StyleSheet.create({
 const Waiting = ({ playerName, gameId }) => {
     return (
         <View style={styles.container}>
-            <TextInput>{playerName}</TextInput>
-            <TextInput>
+            <Text>{playerName}</Text>
+            <Text>
                 Invitation link :{CONSTANTS.BASE_URL}/game/{gameId}/join
-            </TextInput>
-            <TextInput>Waiting for opponent</TextInput>
+            </Text>
+            <Text>Waiting for opponent</Text>
         </View>
     );
 };
 
 Waiting.propTypes = {
-    playerName: PropTypes.string,
-    gameId: PropTypes.number,
+    playerName: PropTypes.string.isRequired,
+    gameId: PropTypes.number.isRequired,
 };
 export default Waiting;

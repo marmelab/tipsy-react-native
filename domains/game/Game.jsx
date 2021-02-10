@@ -21,8 +21,8 @@ const Game = ({ playerName, game }) => {
 };
 
 Game.propTypes = {
-    game: PropTypes.object,
-    playerName: PropTypes.string,
+    game: PropTypes.object.isRequired,
+    playerName: PropTypes.string.isRequired,
 };
 
 export default Game;

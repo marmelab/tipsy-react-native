@@ -63,6 +63,5 @@ const GameScreen = ({ route }) => {
 
 GameScreen.propTypes = {
     route: PropTypes.object.isRequired,
-    navigation: PropTypes.object.isRequired,
 };
 export default GameScreen;
