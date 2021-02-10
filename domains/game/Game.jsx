@@ -5,16 +5,17 @@ import PropTypes from "prop-types";
 const Game = ({ playerName, game }) => {
     return (
         <View>
-            <Text>New Game</Text>
+            <Text>
+                Game {game.id}, you are {playerName}
+            </Text>
             {game.players.map((player) => {
-                if (playerName === player.name) {
-                    return (
-                        <Text key={player.name}>
-                            {player.name} You are playing
-                        </Text>
-                    );
-                }
-                return <Text key={player.name}>{player.name} Is waiting</Text>;
+                return (
+                    <Text key={playerName}>
+                        {`${playerName} is ${
+                            player.current ? "playing" : "waiting"
+                        }`}
+                    </Text>
+                );
             })}
         </View>
     );
