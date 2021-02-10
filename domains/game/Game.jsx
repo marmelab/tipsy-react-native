@@ -11,6 +11,30 @@ const boardObstacles = [
     [false, true, false, false, false, true, false],
     [false, false, false, true, false, false, false],
 ];
+
+const Puck = ({ x, y, pucks }) => {
+    const foundPuck = pucks.find(
+        (puck) => puck.position.x === x && puck.position.y === y
+    );
+    if (foundPuck) {
+        return (
+            <View
+                style={{
+                    borderRadius: 50,
+                    flex: 1,
+                    backgroundColor: foundPuck.color,
+                }}
+            ></View>
+        );
+    }
+    return null;
+};
+Puck.propTypes = {
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    pucks: PropTypes.array.isRequired,
+};
+
 const Game = ({ playerName, game }) => {
     return (
         <View
@@ -40,7 +64,7 @@ const Game = ({ playerName, game }) => {
                                 justifyContent: "center",
                             }}
                         >
-                            {row.map((cell, x) => {
+                            {row.map((obstacle, x) => {
                                 return (
                                     <View
                                         key={"cell" + x + y}
@@ -49,11 +73,17 @@ const Game = ({ playerName, game }) => {
                                             width: 10,
                                             height: 45,
                                             margin: 3,
-                                            backgroundColor: cell
+                                            backgroundColor: obstacle
                                                 ? "black"
                                                 : "white",
                                         }}
-                                    ></View>
+                                    >
+                                        <Puck
+                                            x={x}
+                                            y={y}
+                                            pucks={game.pucks}
+                                        ></Puck>
+                                    </View>
                                 );
                             })}
                         </View>
