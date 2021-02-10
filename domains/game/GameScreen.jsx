@@ -72,7 +72,7 @@ const GameScreen = ({ route }) => {
         case "error":
             return (
                 <View>
-                    <Text>{error.message}</Text>
+                    <Text>{error}</Text>
                 </View>
             );
         default:

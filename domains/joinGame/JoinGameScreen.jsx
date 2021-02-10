@@ -61,7 +61,7 @@ const JoinGameScreen = ({ route, navigation }) => {
         case "error":
             return (
                 <View>
-                    <Text>error.message</Text>
+                    <Text>{error}</Text>
                 </View>
             );
         case "loaded":
