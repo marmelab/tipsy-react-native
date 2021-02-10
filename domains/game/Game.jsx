@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, Button, StyleSheet } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
 const boardObstacles = [
