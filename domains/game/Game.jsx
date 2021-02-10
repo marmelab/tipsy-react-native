@@ -17,6 +17,15 @@ const obstacles = [
     { x: 6, y: 3 },
 ];
 
+const boardObstacles = [
+    [false, false, false, true, false, false, false],
+    [false, true, false, false, false, true, false],
+    [false, false, true, false, true, false, false],
+    [true, false, false, false, false, false, true],
+    [false, false, true, false, true, false, false],
+    [false, true, false, false, false, true, false],
+    [false, false, false, true, false, false, false],
+];
 const Game = ({ playerName, game }) => {
     const renderRow = (rowIndex) => {
         const cells = [];
@@ -76,7 +85,42 @@ const Game = ({ playerName, game }) => {
                     </Text>
                 );
             })}
-            <View style={styles.board}>{renderBoard()}</View>
+            <View style={styles.board}>
+                {boardObstacles.map((row) => {
+                    return (
+                        <View
+                            key={"row" + boardObstacles.indexOf(row)}
+                            style={{
+                                flex: 1,
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
+                            {row.map((cell) => {
+                                return (
+                                    <View
+                                        key={
+                                            "cell" +
+                                            boardObstacles.indexOf(row) +
+                                            row.indexOf(cell)
+                                        }
+                                        style={{
+                                            flex: 1,
+                                            width: 10,
+                                            height: 45,
+                                            margin: 3,
+                                            backgroundColor: cell
+                                                ? "black"
+                                                : "white",
+                                        }}
+                                    ></View>
+                                );
+                            })}
+                        </View>
+                    );
+                })}
+            </View>
         </View>
     );
 };
