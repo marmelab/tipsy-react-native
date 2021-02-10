@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import PropTypes from "prop-types";
+import CONSTANTS from "../../const";
 
 const boardObstacles = [
     [false, false, false, true, false, false, false],
@@ -36,9 +37,38 @@ Puck.propTypes = {
 };
 
 const Game = ({ playerName, game }) => {
+    const [error, setError] = useState();
+
     const tilt = (direction) => {
-        console.log(direction);
+        direction;
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ playerName, direction }),
+        };
+        fetch(CONSTANTS.BASE_URL + "/game/" + game.id + "/tilt", requestOptions)
+            .then(async (res) => {
+                if (!res.ok) {
+                    return Promise.reject(
+                        new Error(
+                            "error on requesting /game/" + game.id + "/tilt"
+                        )
+                    );
+                }
+            })
+            .catch((error) => {
+                setError(error);
+            });
     };
+    if (error) {
+        return (
+            <View>
+                <Text>{error.message}</Text>
+            </View>
+        );
+    }
     return (
         <View
             style={{
@@ -50,14 +80,14 @@ const Game = ({ playerName, game }) => {
         >
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => tilt("left")}
+                onPress={() => tilt("west")}
             >
                 <Text>Left</Text>
             </TouchableOpacity>
             <View style={styles.board}>
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => tilt("up")}
+                    onPress={() => tilt("north")}
                 >
                     <Text>Up</Text>
                 </TouchableOpacity>
@@ -99,7 +129,7 @@ const Game = ({ playerName, game }) => {
                 })}
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => tilt("down")}
+                    onPress={() => tilt("south")}
                 >
                     <Text>Down</Text>
                 </TouchableOpacity>
@@ -107,7 +137,7 @@ const Game = ({ playerName, game }) => {
 
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => tilt("right")}
+                onPress={() => tilt("east")}
             >
                 <Text>Right</Text>
             </TouchableOpacity>
