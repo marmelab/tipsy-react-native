@@ -29,10 +29,10 @@ const Game = ({ playerName, game }) => {
                 );
             })}
             <View style={styles.board}>
-                {boardObstacles.map((row) => {
+                {boardObstacles.map((row, y) => {
                     return (
                         <View
-                            key={"row" + boardObstacles.indexOf(row)}
+                            key={"row" + y}
                             style={{
                                 flex: 1,
                                 flexDirection: "row",
@@ -40,14 +40,10 @@ const Game = ({ playerName, game }) => {
                                 justifyContent: "center",
                             }}
                         >
-                            {row.map((cell) => {
+                            {row.map((cell, x) => {
                                 return (
                                     <View
-                                        key={
-                                            "cell" +
-                                            boardObstacles.indexOf(row) +
-                                            row.indexOf(cell)
-                                        }
+                                        key={"cell" + x + y}
                                         style={{
                                             flex: 1,
                                             width: 10,
