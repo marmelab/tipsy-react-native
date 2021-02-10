@@ -1,24 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
+import { ActivityIndicator, View, Text } from "react-native";
 import CONSTANTS from "../../const";
+import PropTypes from "prop-types";
+import Game from "./Game.jsx";
+import Waiting from "./Waiting.jsx";
 
-const NewGameScreen = ({ route, navigation }) => {
-    const [game, setGame] = useState();
-    const [error, setError] = useState();
+const isGameFull = (game) => {
+    for (const player of game.players) {
+        if (!player.name) {
+            return false;
+        }
+    }
+    return true;
+};
+
+const GameScreen = ({ route }) => {
+    const { playerName, gameId } = route.params;
     const [gameState, setGameState] = useState("pending");
-    const { playerName } = route.params;
+    const [error, setError] = useState();
+    const [game, setGame] = useState();
+
     useEffect(() => {
         if (gameState === "pending") {
             setGameState("loading");
-            const requestOptions = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ playerName }),
-            };
-            fetch(CONSTANTS.BASE_URL + "/game", requestOptions)
+            fetch(CONSTANTS.BASE_URL + "/game/" + gameId)
                 .then(async (res) => {
                     const data = await res.json();
                     if (!res.ok) {
@@ -33,18 +38,20 @@ const NewGameScreen = ({ route, navigation }) => {
                     setGameState("error");
                 });
         }
-    }, [playerName, game]);
+    }, [gameState, setGameState, setError, setGame]);
 
     switch (gameState) {
+        case "loaded":
+            if (isGameFull(game)) {
+                return <Game playerName={playerName} game={game}></Game>;
+            }
+            return <Waiting playerName={playerName} gameId={game.id}></Waiting>;
         case "error":
             return (
                 <View>
                     <Text>{error.message}</Text>
                 </View>
             );
-        case "loaded":
-            navigation.navigate("Game", { playerName, gameId: game.id });
-            return null;
         default:
             return (
                 <View>
@@ -54,8 +61,8 @@ const NewGameScreen = ({ route, navigation }) => {
     }
 };
 
-NewGameScreen.propTypes = {
+GameScreen.propTypes = {
     route: PropTypes.object.isRequired,
     navigation: PropTypes.object.isRequired,
 };
-export default NewGameScreen;
+export default GameScreen;

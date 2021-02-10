@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, TextInput, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import PropTypes from "prop-types";
 import PendingGames from "./PendingGames.jsx";
+import CONSTANTS from "../../const";
 
-const JoinGameScreen = ({ playerName }) => {
+const JoinGameScreen = ({ playerName, navigation }) => {
     const [pendingGames, setPendingGames] = useState();
     const [error, setError] = useState();
     const [loadingPendingGamesState, setLoadingPendingGamesState] = useState(
@@ -12,9 +13,7 @@ const JoinGameScreen = ({ playerName }) => {
     useEffect(() => {
         if (loadingPendingGamesState === "pending") {
             setLoadingPendingGamesState("loading");
-            fetch(
-                "http://ec2-3-250-16-46.eu-west-1.compute.amazonaws.com:8080/game/pending"
-            )
+            fetch(CONSTANTS.BASE_URL + "/game/pending")
                 .then(async (res) => {
                     const data = await res.json();
                     if (!res.ok) {
@@ -35,17 +34,41 @@ const JoinGameScreen = ({ playerName }) => {
         setLoadingPendingGamesState,
         setError,
     ]);
+
+    const joinGame = (gameId) => {
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ playerName }),
+        };
+        fetch(CONSTANTS.BASE_URL + "/game/" + gameId + "/join", requestOptions)
+            .then(async (res) => {
+                if (!res.ok) {
+                    return Promise.reject("une erreur!");
+                }
+                return navigation.navigate("Game", { playerName, gameId });
+            })
+            .catch(() => {
+                setLoadingPendingGamesState("error");
+            });
+    };
+
     switch (loadingPendingGamesState) {
         case "error":
             return (
                 <View>
-                    <TextInput>{{ error }}</TextInput>
+                    <Text>{error.message}</Text>
                 </View>
             );
         case "loaded":
             return (
                 <View>
-                    <PendingGames pendingGames={pendingGames}></PendingGames>
+                    <PendingGames
+                        pendingGames={pendingGames}
+                        joinGame={joinGame}
+                    ></PendingGames>
                 </View>
             );
         default:
@@ -59,5 +82,6 @@ const JoinGameScreen = ({ playerName }) => {
 
 JoinGameScreen.propTypes = {
     playerName: PropTypes.string,
+    navigation: PropTypes.object.isRequired,
 };
 export default JoinGameScreen;
