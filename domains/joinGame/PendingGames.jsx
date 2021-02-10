@@ -1,21 +1,23 @@
 import React from "react";
-import { FlatList, TouchableOpacity, Text, View } from "react-native";
+import { FlatList, Button, Text, View } from "react-native";
 import PropTypes from "prop-types";
 
-const PendingGame = ({ item }) => {
+const PendingGame = ({ item, joinGame }) => {
     return (
-        <TouchableOpacity>
+        <Button title="Pending Game" onPress={() => joinGame(item.id)}>
             <Text>Game {item.id}</Text>
-        </TouchableOpacity>
+        </Button>
     );
 };
 PendingGame.propTypes = {
     item: PropTypes.object,
     joinGame: PropTypes.func,
+    playerName: PropTypes.string,
 };
-
-const PendingGames = ({ pendingGames }) => {
-    const renderPendingGame = ({ item }) => <PendingGame item={item} />;
+const PendingGames = ({ pendingGames, joinGame }) => {
+    const renderPendingGame = ({ item }) => (
+        <PendingGame item={item} joinGame={joinGame} />
+    );
     return (
         <View>
             <FlatList

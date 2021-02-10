@@ -1,9 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, TextInput, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import PropTypes from "prop-types";
-import Game from "./Game.jsx";
+import CONSTANTS from "../../const";
 
-const NewGameScreen = ({ route }) => {
+const Redirect = ({ navigation, playerName, gameId }) => {
+    useEffect(() => {
+        navigation.navigate("Game", { playerName, gameId });
+    });
+    return null;
+};
+
+Redirect.propTypes = {
+    navigation: PropTypes.object.isRequired,
+    playerName: PropTypes.string,
+    gameId: PropTypes.number,
+};
+
+const NewGameScreen = ({ route, navigation }) => {
     const [game, setGame] = useState();
     const [error, setError] = useState();
     const [gameState, setGameState] = useState("pending");
@@ -18,10 +31,7 @@ const NewGameScreen = ({ route }) => {
                 },
                 body: JSON.stringify({ playerName }),
             };
-            fetch(
-                "http://ec2-3-250-16-46.eu-west-1.compute.amazonaws.com:8080/game",
-                requestOptions
-            )
+            fetch(CONSTANTS.BASE_URL + "/game", requestOptions)
                 .then(async (res) => {
                     const data = await res.json();
                     if (!res.ok) {
@@ -42,11 +52,17 @@ const NewGameScreen = ({ route }) => {
         case "error":
             return (
                 <View>
-                    <TextInput>{{ error }}</TextInput>
+                    <Text>{error}</Text>
                 </View>
             );
         case "loaded":
-            return <Game playerName={playerName} game={game}></Game>;
+            return (
+                <Redirect
+                    playerName={playerName}
+                    gameId={game.id}
+                    navigation={navigation}
+                />
+            );
         default:
             return (
                 <View>
@@ -58,6 +74,6 @@ const NewGameScreen = ({ route }) => {
 
 NewGameScreen.propTypes = {
     route: PropTypes.object.isRequired,
+    navigation: PropTypes.object.isRequired,
 };
-
 export default NewGameScreen;
