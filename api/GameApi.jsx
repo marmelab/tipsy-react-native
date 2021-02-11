@@ -96,6 +96,7 @@ const gameApi = {
                 const error = (data && data.message) || res.status;
                 return Promise.reject(new Error(error));
             }
+            return data;
         });
     },
     joinGame: (playerName, gameId) => {
