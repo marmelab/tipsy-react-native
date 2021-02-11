@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import GameStatus from "./GameStatus.jsx";
 import PropTypes from "prop-types";
 import CONSTANTS from "../../const";
+import BotApi from "./BotApi.jsx";
 
 const boardObstacles = [
     [false, false, false, true, false, false, false],
@@ -41,6 +42,7 @@ const Game = ({ playerName, game }) => {
     const [error, setError] = useState();
     const [tiltState, setTiltState] = useState();
     const [replaceState, setReplaceState] = useState();
+    const [botState, setBotState] = useState();
     const currentPlayerColor = game.players.find((player) => player.current)
         .color;
     const replace = useCallback(() => {
@@ -80,36 +82,46 @@ const Game = ({ playerName, game }) => {
             if (tiltState === "loading") {
                 return;
             }
-            const requestOptions = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ playerName, direction }),
-            };
             setTiltState("loading");
-            fetch(
-                CONSTANTS.BASE_URL + "/game/" + game.id + "/tilt",
-                requestOptions
-            )
-                .then(async (res) => {
-                    if (!res.ok) {
-                        return Promise.reject(
-                            new Error(
-                                "error on requesting /game/" + game.id + "/tilt"
-                            )
-                        );
-                    }
-                })
+            BotApi.tilt(direction, playerName, game.id)
                 .catch((error) => {
                     setError(error);
                 })
-                .then(() => {
+                .finally(() => {
                     setTiltState("pending");
                 });
         },
         [tiltState, game.id, playerName, error, setTiltState, setError]
     );
+
+    useEffect(() => {
+        if (game.currentPlayer == "bot" && botState != "loading") {
+            setBotState("loading");
+            BotApi.getBestMove(game)
+                .then(([firstMove, secondMove]) => {
+                    return BotApi.tilt(
+                        CONSTANTS.moves[firstMove],
+                        "bot",
+                        game.id
+                    ).then(() => secondMove);
+                })
+                .then(async (secondMove) => {
+                    await setTimeout(() => {
+                        return BotApi.tilt(
+                            CONSTANTS.moves[secondMove],
+                            "bot",
+                            game.id
+                        );
+                    }, 2000);
+                })
+                .catch((err) => {
+                    setError(err);
+                })
+                .finally(() => {
+                    setBotState("pending");
+                });
+        }
+    }, [game.currentPlayer, setBotState, botState]);
     if (error) {
         return (
             <View>
