@@ -1,6 +1,7 @@
-import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import React, { useState, useCallback } from "react";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import PropTypes from "prop-types";
+import CONSTANTS from "../../const";
 
 const boardObstacles = [
     [false, false, false, true, false, false, false],
@@ -36,47 +37,78 @@ Puck.propTypes = {
 };
 
 const Game = ({ playerName, game }) => {
+    const [error, setError] = useState();
+    const [tiltState, setTiltState] = useState();
+
+    const tilt = useCallback(
+        (direction) => {
+            if (tiltState === "loading") {
+                return;
+            }
+            const requestOptions = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ playerName, direction }),
+            };
+            setTiltState("loading");
+            fetch(
+                CONSTANTS.BASE_URL + "/game/" + game.id + "/tilt",
+                requestOptions
+            )
+                .then(async (res) => {
+                    if (!res.ok) {
+                        return Promise.reject(
+                            new Error(
+                                "error on requesting /game/" + game.id + "/tilt"
+                            )
+                        );
+                    }
+                })
+                .catch((error) => {
+                    setError(error);
+                })
+                .then(() => {
+                    setTiltState("pending");
+                });
+        },
+        [tiltState, game.id, playerName, setTiltState, setError]
+    );
+    if (error) {
+        return (
+            <View>
+                <Text>{error.message}</Text>
+            </View>
+        );
+    }
     return (
-        <View
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        >
-            <Text>
-                Game {game.id}, you are {playerName}
-            </Text>
-            {game.players.map((player) => {
-                return (
-                    <Text key={player.name}>
-                        {`${player.name} is ${
-                            player.current ? "playing" : "waiting"
-                        }`}
-                    </Text>
-                );
-            })}
+        <View style={styles.game}>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => tilt("west")}
+            >
+                <Text>Left</Text>
+            </TouchableOpacity>
             <View style={styles.board}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => tilt("north")}
+                >
+                    <Text>Up</Text>
+                </TouchableOpacity>
                 {boardObstacles.map((row, y) => {
                     return (
-                        <View
-                            key={"row" + y}
-                            style={{
-                                flex: 1,
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                        >
+                        <View key={"row" + y} style={styles.row}>
                             {row.map((obstacle, x) => {
                                 return (
                                     <View
                                         key={"cell" + x + y}
-                                        style={{
-                                            flex: 1,
-                                            width: 10,
-                                            height: 45,
-                                            margin: 3,
-                                            backgroundColor: obstacle
-                                                ? "black"
-                                                : "white",
-                                        }}
+                                        style={
+                                            obstacle
+                                                ? styles.obstacle
+                                                : styles.cell
+                                        }
                                     >
                                         <Puck
                                             x={x}
@@ -89,7 +121,20 @@ const Game = ({ playerName, game }) => {
                         </View>
                     );
                 })}
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => tilt("south")}
+                >
+                    <Text>Down</Text>
+                </TouchableOpacity>
             </View>
+
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => tilt("east")}
+            >
+                <Text>Right</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -97,19 +142,34 @@ const Game = ({ playerName, game }) => {
 const styles = StyleSheet.create({
     cell: {
         flex: 1,
-        width: 10,
-        height: 10,
+        width: 20,
+        height: 40,
+        margin: 3,
         backgroundColor: "white",
     },
+    obstacleCell: {
+        flex: 1,
+        width: 20,
+        height: 40,
+        margin: 3,
+        backgroundColor: "black",
+    },
+    row: {
+        flex: 1,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+    },
     board: {
-        width: 350,
-        height: 350,
+        width: 330,
+        height: 330,
         backgroundColor: "steelblue",
     },
-    container: {
+    game: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        flexDirection: "row",
     },
 });
 
