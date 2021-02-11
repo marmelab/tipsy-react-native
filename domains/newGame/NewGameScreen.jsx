@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { Button, Text, View } from "react-native";
 import PropTypes from "prop-types";
-import CONSTANTS from "../../const";
+import gameApi from "../../api/GameApi.jsx";
 
 const Redirect = ({ navigation, playerName, gameId }) => {
     useEffect(() => {
@@ -25,20 +25,9 @@ const NewGameScreen = ({ route, navigation }) => {
         (withBot = false) => {
             if (gameState === "pending") {
                 setGameState("loading");
-                const requestOptions = {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ playerName, withBot: withBot }),
-                };
-                fetch(CONSTANTS.BASE_URL + "/game", requestOptions)
-                    .then(async (res) => {
-                        const data = await res.json();
-                        if (!res.ok) {
-                            const error = (data && data.message) || res.status;
-                            return Promise.reject(error);
-                        }
+                gameApi
+                    .newGame(playerName, withBot)
+                    .then((data) => {
                         setGame(data);
                         setGameState("loaded");
                     })

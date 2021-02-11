@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import GameStatus from "./GameStatus.jsx";
 import PropTypes from "prop-types";
 import CONSTANTS from "../../const";
-import BotApi from "./BotApi.jsx";
+import gameApi from "../../api/GameApi.jsx";
 
 const boardObstacles = [
     [false, false, false, true, false, false, false],
@@ -49,26 +49,9 @@ const Game = ({ playerName, game }) => {
         if (replaceState === "loading") {
             return;
         }
-        const requestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        };
         setReplaceState("loading");
-        fetch(
-            CONSTANTS.BASE_URL + "/game/" + game.id + "/replace",
-            requestOptions
-        )
-            .then(async (res) => {
-                if (!res.ok) {
-                    return Promise.reject(
-                        new Error(
-                            "error on requesting /game/" + game.id + "/replace"
-                        )
-                    );
-                }
-            })
+        gameApi
+            .replace(game.id)
             .catch((error) => {
                 setError(error);
             })
@@ -83,7 +66,8 @@ const Game = ({ playerName, game }) => {
                 return;
             }
             setTiltState("loading");
-            BotApi.tilt(direction, playerName, game.id)
+            gameApi
+                .tilt(direction, playerName, game.id)
                 .catch((error) => {
                     setError(error);
                 })
@@ -97,17 +81,16 @@ const Game = ({ playerName, game }) => {
     useEffect(() => {
         if (game.currentPlayer == "bot" && botState != "loading") {
             setBotState("loading");
-            BotApi.getBestMove(game)
+            gameApi
+                .getBestMove(game)
                 .then(([firstMove, secondMove]) => {
-                    return BotApi.tilt(
-                        CONSTANTS.moves[firstMove],
-                        "bot",
-                        game.id
-                    ).then(() => secondMove);
+                    return gameApi
+                        .tilt(CONSTANTS.moves[firstMove], "bot", game.id)
+                        .then(() => secondMove);
                 })
                 .then(async (secondMove) => {
                     await setTimeout(() => {
-                        return BotApi.tilt(
+                        return gameApi.tilt(
                             CONSTANTS.moves[secondMove],
                             "bot",
                             game.id
