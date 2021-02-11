@@ -9,5 +9,8 @@ run:
 test:
 	yarn test
 
+deploy:
+	expo build:android
+
 lint:
 	yarn lint

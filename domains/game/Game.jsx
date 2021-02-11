@@ -1,7 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import GameStatus from "./GameStatus.jsx";
 import PropTypes from "prop-types";
 import CONSTANTS from "../../const";
+import gameApi from "../../api/GameApi.jsx";
 
 const boardObstacles = [
     [false, false, false, true, false, false, false],
@@ -39,42 +41,71 @@ Puck.propTypes = {
 const Game = ({ playerName, game }) => {
     const [error, setError] = useState();
     const [tiltState, setTiltState] = useState();
+    const [replaceState, setReplaceState] = useState();
+    const [botState, setBotState] = useState();
+    const currentPlayerColor = useMemo(() => {
+        return game.players.find((player) => player.current).color;
+    }, [game.players]);
+    const replace = useCallback(() => {
+        if (replaceState === "loading") {
+            return;
+        }
+        setReplaceState("loading");
+        gameApi
+            .replace(game.id)
+            .catch((error) => {
+                setError(error);
+            })
+            .finally(() => {
+                setReplaceState("pending");
+            });
+    }, [replaceState, setReplaceState, game.id, error, setError]);
 
     const tilt = useCallback(
         (direction) => {
             if (tiltState === "loading") {
                 return;
             }
-            const requestOptions = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ playerName, direction }),
-            };
             setTiltState("loading");
-            fetch(
-                CONSTANTS.BASE_URL + "/game/" + game.id + "/tilt",
-                requestOptions
-            )
-                .then(async (res) => {
-                    if (!res.ok) {
-                        return Promise.reject(
-                            new Error(
-                                "error on requesting /game/" + game.id + "/tilt"
-                            )
-                        );
-                    }
-                })
+            gameApi
+                .tilt(direction, playerName, game.id)
                 .catch((error) => {
                     setError(error);
                 })
-                .then(() => {
+                .finally(() => {
                     setTiltState("pending");
                 });
         },
-        [tiltState, game.id, playerName, setTiltState, setError]
+        [tiltState, game.id, playerName, error, setTiltState, setError]
     );
+
+    useEffect(() => {
+        if (game.currentPlayer == "bot" && botState != "loading") {
+            setBotState("loading");
+            gameApi
+                .getBestMove(game)
+                .then(([firstMove, secondMove]) => {
+                    return gameApi
+                        .tilt(CONSTANTS.moves[firstMove], "bot", game.id)
+                        .then(() => secondMove);
+                })
+                .then(async (secondMove) => {
+                    await setTimeout(() => {
+                        return gameApi.tilt(
+                            CONSTANTS.moves[secondMove],
+                            "bot",
+                            game.id
+                        );
+                    }, 2000);
+                })
+                .catch((err) => {
+                    setError(err);
+                })
+                .finally(() => {
+                    setBotState("pending");
+                });
+        }
+    }, [game.currentPlayer, setBotState, botState]);
     if (error) {
         return (
             <View>
@@ -83,58 +114,93 @@ const Game = ({ playerName, game }) => {
         );
     }
     return (
-        <View style={styles.game}>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => tilt("west")}
+        <View
+            style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+            }}
+        >
+            <GameStatus game={game} playerName={playerName}></GameStatus>
+            <View
+                style={
+                    currentPlayerColor == "red"
+                        ? styles.gameRed
+                        : styles.gameBlue
+                }
             >
-                <Text>Left</Text>
-            </TouchableOpacity>
-            <View style={styles.board}>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => tilt("north")}
-                >
-                    <Text>Up</Text>
-                </TouchableOpacity>
-                {boardObstacles.map((row, y) => {
-                    return (
-                        <View key={"row" + y} style={styles.row}>
-                            {row.map((obstacle, x) => {
-                                return (
-                                    <View
-                                        key={"cell" + x + y}
-                                        style={
-                                            obstacle
-                                                ? styles.obstacle
-                                                : styles.cell
-                                        }
-                                    >
-                                        <Puck
-                                            x={x}
-                                            y={y}
-                                            pucks={game.pucks}
-                                        ></Puck>
-                                    </View>
-                                );
-                            })}
-                        </View>
-                    );
-                })}
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => tilt("south")}
-                >
-                    <Text>Down</Text>
-                </TouchableOpacity>
-            </View>
+                {game.currentPlayer == playerName && game.remainingTurns > 0 ? (
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => tilt("west")}
+                    >
+                        <Text>Left</Text>
+                    </TouchableOpacity>
+                ) : null}
+                <View style={styles.board}>
+                    {game.currentPlayer == playerName &&
+                    game.remainingTurns > 0 ? (
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => tilt("north")}
+                        >
+                            <Text>Up</Text>
+                        </TouchableOpacity>
+                    ) : null}
+                    {boardObstacles.map((row, y) => {
+                        return (
+                            <View key={"row" + y} style={styles.row}>
+                                {row.map((obstacle, x) => {
+                                    return (
+                                        <View
+                                            key={"cell" + x + y}
+                                            style={
+                                                obstacle
+                                                    ? styles.obstacle
+                                                    : styles.cell
+                                            }
+                                        >
+                                            <Puck
+                                                x={x}
+                                                y={y}
+                                                pucks={game.pucks}
+                                            ></Puck>
+                                        </View>
+                                    );
+                                })}
+                            </View>
+                        );
+                    })}
+                    {game.currentPlayer == playerName &&
+                    game.remainingTurns > 0 ? (
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => tilt("south")}
+                        >
+                            <Text>Down</Text>
+                        </TouchableOpacity>
+                    ) : null}
+                </View>
 
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => tilt("east")}
-            >
-                <Text>Right</Text>
-            </TouchableOpacity>
+                {game.currentPlayer == playerName && game.remainingTurns > 0 ? (
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => tilt("east")}
+                    >
+                        <Text>Right</Text>
+                    </TouchableOpacity>
+                ) : null}
+            </View>
+            {game.remainingTurns == 0 &&
+            (game.fallenPucks[0] > 0 || game.fallenPucks[1] > 0) ? (
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => replace()}
+                >
+                    <Text>Replace pucks</Text>
+                </TouchableOpacity>
+            ) : null}
         </View>
     );
 };
@@ -147,7 +213,7 @@ const styles = StyleSheet.create({
         margin: 3,
         backgroundColor: "white",
     },
-    obstacleCell: {
+    obstacle: {
         flex: 1,
         width: 20,
         height: 40,
@@ -165,11 +231,19 @@ const styles = StyleSheet.create({
         height: 330,
         backgroundColor: "steelblue",
     },
-    game: {
+    gameBlue: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",
+        backgroundColor: "lightseagreen",
+    },
+    gameRed: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "row",
+        backgroundColor: "lightsalmon",
     },
 });
 

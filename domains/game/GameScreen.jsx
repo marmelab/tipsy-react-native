@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { ActivityIndicator, View, Text } from "react-native";
-import CONSTANTS from "../../const";
 import PropTypes from "prop-types";
 import Game from "./Game.jsx";
 import Waiting from "./Waiting.jsx";
+import gameApi from "../../api/GameApi.jsx";
 
 const isGameFull = (game) => {
     for (const player of game.players) {
@@ -23,13 +23,9 @@ const GameScreen = ({ route }) => {
     useEffect(() => {
         if (gameState === "pending") {
             setGameState("loading");
-            fetch(CONSTANTS.BASE_URL + "/game/" + gameId)
-                .then(async (res) => {
-                    const data = await res.json();
-                    if (!res.ok) {
-                        const error = (data && data.message) || res.status;
-                        return Promise.reject(error);
-                    }
+            gameApi
+                .getGame(gameId)
+                .then((data) => {
                     setGame(data);
                     setGameState("loaded");
                 })
@@ -42,21 +38,18 @@ const GameScreen = ({ route }) => {
     useEffect(() => {
         const updateGame = setInterval(function () {
             if (gameState === "loaded") {
-                fetch(CONSTANTS.BASE_URL + "/game/" + gameId)
-                    .then(async (res) => {
-                        const data = await res.json();
-                        if (!res.ok) {
-                            const error = (data && data.message) || res.status;
-                            return Promise.reject(error);
-                        }
+                gameApi
+                    .getGame(gameId)
+                    .then((data) => {
                         setGame(data);
+                        setGameState("loaded");
                     })
                     .catch((err) => {
                         setError(err);
                         setGameState("error");
                     });
             }
-        }, 2000);
+        }, 1000);
 
         return () => {
             clearInterval(updateGame);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import PropTypes from "prop-types";
 import PendingGames from "./PendingGames.jsx";
-import CONSTANTS from "../../const";
+import gameApi from "../../api/GameApi.jsx";
 
 const JoinGameScreen = ({ route, navigation }) => {
     const { playerName } = route.params;
@@ -12,23 +12,24 @@ const JoinGameScreen = ({ route, navigation }) => {
         "pending"
     );
     useEffect(() => {
-        if (loadingPendingGamesState === "pending") {
-            setLoadingPendingGamesState("loading");
-            fetch(CONSTANTS.BASE_URL + "/game/pending")
-                .then(async (res) => {
-                    const data = await res.json();
-                    if (!res.ok) {
-                        const error = (data && data.message) || res.status;
-                        return Promise.reject(error);
-                    }
-                    setPendingGames(data);
-                    setLoadingPendingGamesState("loaded");
-                })
-                .catch((err) => {
-                    setError(err);
-                    setLoadingPendingGamesState("error");
-                });
-        }
+        const pendingGamesUpdate = setInterval(function () {
+            if (loadingPendingGamesState === "pending") {
+                setLoadingPendingGamesState("loading");
+                gameApi
+                    .pendingGames()
+                    .then((data) => {
+                        setPendingGames(data);
+                        setLoadingPendingGamesState("loaded");
+                    })
+                    .catch((err) => {
+                        setError(err);
+                        setLoadingPendingGamesState("error");
+                    });
+            }
+        }, 1000);
+        return () => {
+            clearInterval(pendingGamesUpdate);
+        };
     }, [
         loadingPendingGamesState,
         setPendingGames,
@@ -37,18 +38,9 @@ const JoinGameScreen = ({ route, navigation }) => {
     ]);
 
     const joinGame = (gameId) => {
-        const requestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ playerName }),
-        };
-        fetch(CONSTANTS.BASE_URL + "/game/" + gameId + "/join", requestOptions)
-            .then(async (res) => {
-                if (!res.ok) {
-                    return Promise.reject("une erreur!");
-                }
+        gameApi
+            .joinGame(playerName, gameId)
+            .then(() => {
                 return navigation.navigate("Game", { playerName, gameId });
             })
             .catch((error) => {
@@ -61,7 +53,7 @@ const JoinGameScreen = ({ route, navigation }) => {
         case "error":
             return (
                 <View>
-                    <Text>{error}</Text>
+                    <Text>{error.message}</Text>
                 </View>
             );
         case "loaded":
