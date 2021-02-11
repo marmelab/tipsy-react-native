@@ -40,6 +40,40 @@ Puck.propTypes = {
 const Game = ({ playerName, game }) => {
     const [error, setError] = useState();
     const [tiltState, setTiltState] = useState();
+    const [replaceState, setReplaceState] = useState();
+
+    const replace = useCallback(() => {
+        if (replaceState === "loading") {
+            return;
+        }
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        setReplaceState("loading");
+        fetch(
+            CONSTANTS.BASE_URL + "/game/" + game.id + "/replace",
+            requestOptions
+        )
+            .then(async (res) => {
+                if (!res.ok) {
+                    return Promise.reject(
+                        new Error(
+                            "error on requesting /game/" + game.id + "/replace"
+                        )
+                    );
+                }
+            })
+            .catch((error) => {
+                console.dir(error);
+                setError(error);
+            })
+            .finally(() => {
+                setReplaceState("pending");
+            });
+    }, [replaceState, setReplaceState, game.id, error, setError]);
 
     const tilt = useCallback(
         (direction) => {
@@ -74,7 +108,7 @@ const Game = ({ playerName, game }) => {
                     setTiltState("pending");
                 });
         },
-        [tiltState, game.id, playerName, setTiltState, setError]
+        [tiltState, game.id, playerName, error, setTiltState, setError]
     );
     if (error) {
         return (
@@ -146,6 +180,9 @@ const Game = ({ playerName, game }) => {
                     <Text>Right</Text>
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity style={styles.button} onPress={() => replace()}>
+                <Text>Replace pucks</Text>
+            </TouchableOpacity>
         </View>
     );
 };

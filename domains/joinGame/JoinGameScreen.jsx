@@ -19,7 +19,7 @@ const JoinGameScreen = ({ route, navigation }) => {
                     const data = await res.json();
                     if (!res.ok) {
                         const error = (data && data.message) || res.status;
-                        return Promise.reject(error);
+                        return Promise.reject(new Error(error));
                     }
                     setPendingGames(data);
                     setLoadingPendingGamesState("loaded");
@@ -61,7 +61,7 @@ const JoinGameScreen = ({ route, navigation }) => {
         case "error":
             return (
                 <View>
-                    <Text>{error}</Text>
+                    <Text>{error.message}</Text>
                 </View>
             );
         case "loaded":

@@ -56,7 +56,7 @@ const GameScreen = ({ route }) => {
                         setGameState("error");
                     });
             }
-        }, 2000);
+        }, 1000);
 
         return () => {
             clearInterval(updateGame);
