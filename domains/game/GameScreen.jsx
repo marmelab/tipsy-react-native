@@ -39,7 +39,6 @@ const GameScreen = ({ route }) => {
     useEffect(() => {
         const updateGame = setInterval(function () {
             if (gameState === "loaded") {
-                console.log("updateGame", gameId);
                 gameApi
                     .getGame(gameId)
                     .then((data) => {
