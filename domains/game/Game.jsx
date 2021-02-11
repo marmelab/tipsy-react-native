@@ -104,7 +104,11 @@ const Game = ({ playerName, game }) => {
                                 return (
                                     <View
                                         key={"cell" + x + y}
-                                        style={styles.cell(obstacle)}
+                                        style={
+                                            obstacle
+                                                ? styles.obstacle
+                                                : styles.cell
+                                        }
                                     >
                                         <Puck
                                             x={x}
@@ -136,13 +140,20 @@ const Game = ({ playerName, game }) => {
 };
 
 const styles = StyleSheet.create({
-    cell: (obstacle) => ({
+    cell: {
         flex: 1,
         width: 20,
         height: 40,
         margin: 3,
-        backgroundColor: obstacle ? "black" : "white",
-    }),
+        backgroundColor: "white",
+    },
+    obstacleCell: {
+        flex: 1,
+        width: 20,
+        height: 40,
+        margin: 3,
+        backgroundColor: "black",
+    },
     row: {
         flex: 1,
         flexDirection: "row",
