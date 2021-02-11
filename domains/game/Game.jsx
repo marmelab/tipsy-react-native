@@ -83,14 +83,7 @@ const Game = ({ playerName, game }) => {
         );
     }
     return (
-        <View
-            style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "row",
-            }}
-        >
+        <View style={styles.game}>
             <TouchableOpacity
                 style={styles.button}
                 onPress={() => tilt("west")}
@@ -106,28 +99,12 @@ const Game = ({ playerName, game }) => {
                 </TouchableOpacity>
                 {boardObstacles.map((row, y) => {
                     return (
-                        <View
-                            key={"row" + y}
-                            style={{
-                                flex: 1,
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                        >
+                        <View key={"row" + y} style={styles.row}>
                             {row.map((obstacle, x) => {
                                 return (
                                     <View
                                         key={"cell" + x + y}
-                                        style={{
-                                            flex: 1,
-                                            width: 20,
-                                            height: 40,
-                                            margin: 3,
-                                            backgroundColor: obstacle
-                                                ? "black"
-                                                : "white",
-                                        }}
+                                        style={styles.cell(obstacle)}
                                     >
                                         <Puck
                                             x={x}
@@ -159,21 +136,29 @@ const Game = ({ playerName, game }) => {
 };
 
 const styles = StyleSheet.create({
-    cell: {
+    cell: (obstacle) => ({
         flex: 1,
-        width: 10,
-        height: 10,
-        backgroundColor: "white",
+        width: 20,
+        height: 40,
+        margin: 3,
+        backgroundColor: obstacle ? "black" : "white",
+    }),
+    row: {
+        flex: 1,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
     },
     board: {
         width: 330,
         height: 330,
         backgroundColor: "steelblue",
     },
-    container: {
+    game: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        flexDirection: "row",
     },
 });
 
