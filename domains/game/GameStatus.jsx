@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import React from "react";
+import { Text, View } from "react-native";
 import PropTypes from "prop-types";
 
 const GameStatus = ({ game, playerName }) => {
