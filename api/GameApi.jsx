@@ -7,7 +7,7 @@ const buildBotGame = (currentGame) => {
         fallenPucks: [],
     };
     for (const puck of currentGame.pucks) {
-        const position = puck.position.x + ":" + puck.position.y;
+        const position = `${puck.position.x}:${puck.position.y}`;
         game.pucks[position] = {
             color: puck.color,
             position: position,
@@ -42,12 +42,12 @@ const gameApi = {
             body: JSON.stringify({ playerName, direction }),
         };
         return fetch(
-            CONSTANTS.BASE_URL + "/game/" + gameId + "/tilt",
+            `${CONSTANTS.BASE_URL}/game/${gameId}/tilt`,
             requestOptions
         ).then((res) => {
             if (!res.ok) {
                 return Promise.reject(
-                    new Error("error on requesting /game/" + gameId + "/tilt")
+                    new Error(`error on requesting /game/${gameId}/tilt`)
                 );
             }
         });
@@ -60,14 +60,12 @@ const gameApi = {
             },
         };
         return fetch(
-            CONSTANTS.BASE_URL + "/game/" + gameId + "/replace",
+            `${CONSTANTS.BASE_URL}/game/${gameId}/replace`,
             requestOptions
         ).then(async (res) => {
             if (!res.ok) {
                 return Promise.reject(
-                    new Error(
-                        "error on requesting /game/" + gameId + "/replace"
-                    )
+                    new Error(`error on requesting /game/${gameId}/replace`)
                 );
             }
         });
@@ -80,7 +78,7 @@ const gameApi = {
             },
             body: JSON.stringify({ playerName, withBot: withBot }),
         };
-        return fetch(CONSTANTS.BASE_URL + "/game", requestOptions).then(
+        return fetch(`${CONSTANTS.BASE_URL}/game`, requestOptions).then(
             async (res) => {
                 const data = await res.json();
                 if (!res.ok) {
@@ -92,7 +90,7 @@ const gameApi = {
         );
     },
     pendingGames: () => {
-        return fetch(CONSTANTS.BASE_URL + "/game/pending").then(async (res) => {
+        return fetch(`${CONSTANTS.BASE_URL}/game/pending`).then(async (res) => {
             const data = await res.json();
             if (!res.ok) {
                 const error = (data && data.message) || res.status;
@@ -109,7 +107,7 @@ const gameApi = {
             body: JSON.stringify({ playerName }),
         };
         return fetch(
-            CONSTANTS.BASE_URL + "/game/" + gameId + "/join",
+            `${CONSTANTS.BASE_URL}/game/${gameId}/join`,
             requestOptions
         ).then(async (res) => {
             if (!res.ok) {
@@ -118,7 +116,7 @@ const gameApi = {
         });
     },
     getGame: (gameId) => {
-        return fetch(CONSTANTS.BASE_URL + "/game/" + gameId).then(
+        return fetch(`${CONSTANTS.BASE_URL}/game/${gameId}`).then(
             async (res) => {
                 const data = await res.json();
                 if (!res.ok) {

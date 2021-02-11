@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import GameStatus from "./GameStatus.jsx";
 import PropTypes from "prop-types";
@@ -43,8 +43,9 @@ const Game = ({ playerName, game }) => {
     const [tiltState, setTiltState] = useState();
     const [replaceState, setReplaceState] = useState();
     const [botState, setBotState] = useState();
-    const currentPlayerColor = game.players.find((player) => player.current)
-        .color;
+    const currentPlayerColor = useMemo(() => {
+        return game.players.find((player) => player.current).color;
+    }, [game.players]);
     const replace = useCallback(() => {
         if (replaceState === "loading") {
             return;
