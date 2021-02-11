@@ -1,40 +1,72 @@
-import { Button, TextInput, View, StyleSheet, Platform } from "react-native";
+import { Pressable, TextInput, View, StyleSheet, Text } from "react-native";
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
-const backgroundColor = "#fff";
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor,
-        alignItems: "center",
-        justifyContent: "center",
-        // To avoid overlapping status bar on android : https://stackoverflow.com/questions/51289587/react-native-how-to-use-safeareaview-for-android-notch-devices/55017347
-        paddingTop: Platform.OS === "android" ? 25 : 0,
-    },
-});
+import { useFonts } from "expo-font";
 
 const PlayerInputName = ({ setPlayerName }) => {
     const [playerName, updatePlayerName] = useState("");
-
+    const [fontLoaded] = useFonts({
+        Lobster: require("../../assets/fonts/Lobster-Regular.ttf"),
+    });
+    if (!fontLoaded) {
+        return null;
+    }
     return (
         <View style={styles.container}>
+            <Text style={{ fontFamily: "Lobster", fontSize: 90 }}>Tipsy</Text>
             <TextInput
                 placeholder="Player name"
+                placeholderTextColor="white"
+                selectionColor="white"
                 onChangeText={updatePlayerName}
+                style={styles.textInput}
             ></TextInput>
-            <Button
-                title="setName"
-                disabled={!playerName}
+            <Pressable
+                title="Go"
+                disabled={!playerName || playerName === "bot"}
                 onPress={() => setPlayerName(playerName)}
+                style={{}}
             >
-                Validate
-            </Button>
+                <Text style={styles.goButton}>Go</Text>
+            </Pressable>
         </View>
     );
 };
 PlayerInputName.propTypes = {
     setPlayerName: PropTypes.func,
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "steelblue",
+        // To avoid overlapping status bar on android : https://stackoverflow.com/questions/51289587/react-native-how-to-use-safeareaview-for-android-notch-devices/55017347
+    },
+    textInput: {
+        height: 50,
+        width: 200,
+        margin: 50,
+        paddingLeft: 20,
+        borderColor: "white",
+        color: "white",
+        borderWidth: 2,
+        borderRadius: 30,
+    },
+    goButton: {
+        fontFamily: "Lobster",
+        fontSize: 30,
+        height: 50,
+        width: 70,
+        margin: 50,
+        paddingLeft: 20,
+        color: "steelblue",
+        backgroundColor: "white",
+        borderRadius: 30,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+});
+
 export default PlayerInputName;
