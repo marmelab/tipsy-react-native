@@ -41,7 +41,7 @@ const JoinGameScreen = ({ route, navigation }) => {
         gameApi
             .joinGame(playerName, gameId)
             .then(() => {
-                return navigation.navigate("Game", { playerName, gameId });
+                navigation.navigate("Game", { playerName, gameId });
             })
             .catch((error) => {
                 setError(error);
