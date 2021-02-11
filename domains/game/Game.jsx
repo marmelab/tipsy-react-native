@@ -128,19 +128,24 @@ const Game = ({ playerName, game }) => {
                     flexDirection: "row",
                 }}
             >
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => tilt("west")}
-                >
-                    <Text>Left</Text>
-                </TouchableOpacity>
-                <View style={styles.board}>
+                {game.currentPlayer == playerName && game.remainingTurns > 0 ? (
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={() => tilt("north")}
+                        onPress={() => tilt("west")}
                     >
-                        <Text>Up</Text>
+                        <Text>Left</Text>
                     </TouchableOpacity>
+                ) : null}
+                <View style={styles.board}>
+                    {game.currentPlayer == playerName &&
+                    game.remainingTurns > 0 ? (
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => tilt("north")}
+                        >
+                            <Text>Up</Text>
+                        </TouchableOpacity>
+                    ) : null}
                     {boardObstacles.map((row, y) => {
                         return (
                             <View key={"row" + y} style={styles.row}>
@@ -165,24 +170,35 @@ const Game = ({ playerName, game }) => {
                             </View>
                         );
                     })}
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => tilt("south")}
-                    >
-                        <Text>Down</Text>
-                    </TouchableOpacity>
+                    {game.currentPlayer == playerName &&
+                    game.remainingTurns > 0 ? (
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => tilt("south")}
+                        >
+                            <Text>Down</Text>
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
 
+                {game.currentPlayer == playerName && game.remainingTurns > 0 ? (
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => tilt("east")}
+                    >
+                        <Text>Right</Text>
+                    </TouchableOpacity>
+                ) : null}
+            </View>
+            {game.remainingTurns == 0 &&
+            (game.fallenPucks[0] > 0 || game.fallenPucks[1] > 0) ? (
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => tilt("east")}
+                    onPress={() => replace()}
                 >
-                    <Text>Right</Text>
+                    <Text>Replace pucks</Text>
                 </TouchableOpacity>
-            </View>
-            <TouchableOpacity style={styles.button} onPress={() => replace()}>
-                <Text>Replace pucks</Text>
-            </TouchableOpacity>
+            ) : null}
         </View>
     );
 };
