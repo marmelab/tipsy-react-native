@@ -41,7 +41,8 @@ const Game = ({ playerName, game }) => {
     const [error, setError] = useState();
     const [tiltState, setTiltState] = useState();
     const [replaceState, setReplaceState] = useState();
-
+    const currentPlayerColor = game.players.find((player) => player.current)
+        .color;
     const replace = useCallback(() => {
         if (replaceState === "loading") {
             return;
@@ -117,15 +118,21 @@ const Game = ({ playerName, game }) => {
         );
     }
     return (
-        <View style={styles.game}>
+        <View
+            style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+            }}
+        >
             <GameStatus game={game} playerName={playerName}></GameStatus>
             <View
-                style={{
-                    flex: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "row",
-                }}
+                style={
+                    currentPlayerColor == "red"
+                        ? styles.gameRed
+                        : styles.gameBlue
+                }
             >
                 {game.currentPlayer == playerName && game.remainingTurns > 0 ? (
                     <TouchableOpacity
@@ -210,7 +217,7 @@ const styles = StyleSheet.create({
         margin: 3,
         backgroundColor: "white",
     },
-    obstacleCell: {
+    obstacle: {
         flex: 1,
         width: 20,
         height: 40,
@@ -228,11 +235,19 @@ const styles = StyleSheet.create({
         height: 330,
         backgroundColor: "steelblue",
     },
-    game: {
+    gameBlue: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",
+        backgroundColor: "lightseagreen",
+    },
+    gameRed: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "row",
+        backgroundColor: "lightsalmon",
     },
 });
 
