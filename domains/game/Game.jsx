@@ -67,7 +67,6 @@ const Game = ({ playerName, game }) => {
                 }
             })
             .catch((error) => {
-                console.dir(error);
                 setError(error);
             })
             .finally(() => {
