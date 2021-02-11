@@ -49,7 +49,7 @@ const GameScreen = ({ route }) => {
                         setGameState("error");
                     });
             }
-        }, 1000);
+        }, 2000);
 
         return () => {
             clearInterval(updateGame);

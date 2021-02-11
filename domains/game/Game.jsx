@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     Modal,
     Pressable,
+    Image,
 } from "react-native";
 import GameStatus from "./GameStatus.jsx";
 import PropTypes from "prop-types";
@@ -29,23 +30,24 @@ const Puck = ({ x, y, pucks }) => {
     if (foundPuck) {
         return (
             <View
-                style={{
-                    borderRadius: 50,
-                    flex: 1,
-                    backgroundColor: foundPuck.color,
-                }}
+                style={[
+                    foundPuck.flipped ? styles.flipped : styles.puck,
+                    foundPuck.color === "blue" ? styles.blue : styles.red,
+                ]}
             ></View>
         );
     }
     return null;
 };
 
-const delay = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 Puck.propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
     pucks: PropTypes.array.isRequired,
 };
+
+const delay = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+const boardImage = { uri: "./board.webp" };
 
 const Game = ({ playerName, game }) => {
     const [error, setError] = useState();
@@ -116,12 +118,15 @@ const Game = ({ playerName, game }) => {
                         "bot",
                         game.id
                     );
-                    await delay(5000);
+                    await delay(3000);
                     await gameApi.tilt(
                         CONSTANTS.moves[secondMove],
                         "bot",
                         game.id
                     );
+                    await delay(2000);
+                })
+                .then(() => {
                     setBotState("pending");
                 })
                 .catch((err) => {
@@ -145,6 +150,7 @@ const Game = ({ playerName, game }) => {
                 flexDirection: "column",
             }}
         >
+            <Text>{botState}</Text>
             <GameStatus game={game} playerName={playerName}></GameStatus>
             <View
                 style={
@@ -161,7 +167,15 @@ const Game = ({ playerName, game }) => {
                         <Text>Left</Text>
                     </TouchableOpacity>
                 ) : null}
-                <View style={styles.board}>
+                <View source={boardImage} style={styles.board}>
+                    <Image
+                        source={require("./img/board.webp")}
+                        style={{
+                            width: 330,
+                            height: 330,
+                            position: "absolute",
+                        }}
+                    />
                     {game.currentPlayer == playerName &&
                     game.remainingTurns > 0 ? (
                         <TouchableOpacity
@@ -224,7 +238,6 @@ const Game = ({ playerName, game }) => {
                     <Text>Replace pucks</Text>
                 </TouchableOpacity>
             ) : null}
-
             <Modal
                 animationType="slide"
                 visible={modalVisible}
@@ -272,14 +285,12 @@ const styles = StyleSheet.create({
         width: 20,
         height: 40,
         margin: 3,
-        backgroundColor: "white",
     },
     obstacle: {
         flex: 1,
         width: 20,
         height: 40,
         margin: 3,
-        backgroundColor: "black",
     },
     row: {
         flex: 1,
@@ -320,6 +331,20 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
+    },
+    puck: {
+        borderRadius: 50,
+        flex: 1,
+    },
+    flipped: {
+        borderWidth: 2,
+        borderColor: "grey",
+    },
+    red: {
+        backgroundColor: "lightsalmon",
+    },
+    blue: {
+        backgroundColor: "lightseagreen",
     },
 });
 
