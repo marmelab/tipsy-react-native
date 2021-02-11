@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { ActivityIndicator, View, Text } from "react-native";
-import CONSTANTS from "../../const";
 import PropTypes from "prop-types";
 import Game from "./Game.jsx";
 import Waiting from "./Waiting.jsx";

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import PropTypes from "prop-types";
 import PendingGames from "./PendingGames.jsx";
-import CONSTANTS from "../../const";
 import gameApi from "../../api/GameApi.jsx";
 
 const JoinGameScreen = ({ route, navigation }) => {
