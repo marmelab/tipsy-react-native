@@ -5,7 +5,11 @@ import PropTypes from "prop-types";
 const GameStatus = ({ game, playerName }) => {
     return (
         <View>
-            <Text>You are {playerName}</Text>
+            <Text>
+                {playerName == game.currentPlayer
+                    ? "Your turn!"
+                    : game.currentPlayer + " turn!"}
+            </Text>
         </View>
     );
 };
