@@ -122,7 +122,6 @@ const Game = ({ playerName, game }) => {
                         "bot",
                         game.id
                     );
-                    await delay(2000);
                     setBotState("pending");
                 })
                 .catch((err) => {
@@ -237,11 +236,11 @@ const Game = ({ playerName, game }) => {
                 <View style={styles.modalView}>
                     <Pressable
                         style={[styles.button, styles.buttonClose]}
-                        onPress={() => closeAdvice()}
+                        onPress={closeAdvice}
                     >
                         <Text>
                             {bestMove
-                                ? bestMove
+                                ? `First ${bestMove[0]} then ${bestMove[1]}`
                                 : "Bot is thinking about the best move..."}
                         </Text>
                     </Pressable>
@@ -256,7 +255,7 @@ const Game = ({ playerName, game }) => {
                         zIndex: 999,
                         backgroundColor: "white",
                     }}
-                    onPress={() => showAdvice()}
+                    onPress={showAdvice}
                 >
                     <View>
                         <Text>Hint</Text>
