@@ -2,7 +2,8 @@ import CONSTANTS from "../const";
 
 const buildBotGame = (currentGame) => {
     const game = {
-        currentPlayer: currentGame.currentPlayer == "red" ? "blue" : "red",
+        currentPlayer: currentGame.players.find((player) => player.current)
+            .color,
         pucks: {},
         fallenPucks: [],
     };

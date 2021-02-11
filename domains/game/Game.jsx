@@ -1,5 +1,12 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+    Text,
+    View,
+    StyleSheet,
+    TouchableOpacity,
+    Modal,
+    Pressable,
+} from "react-native";
 import GameStatus from "./GameStatus.jsx";
 import PropTypes from "prop-types";
 import CONSTANTS from "../../const";
@@ -32,6 +39,8 @@ const Puck = ({ x, y, pucks }) => {
     }
     return null;
 };
+
+const delay = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 Puck.propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
@@ -43,9 +52,13 @@ const Game = ({ playerName, game }) => {
     const [tiltState, setTiltState] = useState();
     const [replaceState, setReplaceState] = useState();
     const [botState, setBotState] = useState();
+    const [bestMove, setBestMove] = useState();
+    const [modalVisible, setModalVisible] = useState(false);
+
     const currentPlayerColor = useMemo(() => {
         return game.players.find((player) => player.current).color;
     }, [game.players]);
+
     const replace = useCallback(() => {
         if (replaceState === "loading") {
             return;
@@ -60,6 +73,18 @@ const Game = ({ playerName, game }) => {
                 setReplaceState("pending");
             });
     }, [replaceState, setReplaceState, game.id, error, setError]);
+
+    const showAdvice = useCallback(() => {
+        gameApi.getBestMove(game).then((bestMove) => {
+            setBestMove(bestMove);
+        });
+        setModalVisible(true);
+    }, [setBestMove, setModalVisible]);
+
+    const closeAdvice = useCallback(() => {
+        setBestMove();
+        setModalVisible(!modalVisible);
+    }, [setBestMove, setModalVisible, modalVisible]);
 
     const tilt = useCallback(
         (direction) => {
@@ -84,25 +109,24 @@ const Game = ({ playerName, game }) => {
             setBotState("loading");
             gameApi
                 .getBestMove(game)
-                .then(([firstMove, secondMove]) => {
-                    return gameApi
-                        .tilt(CONSTANTS.moves[firstMove], "bot", game.id)
-                        .then(() => secondMove);
-                })
-                .then(async (secondMove) => {
-                    await setTimeout(() => {
-                        return gameApi.tilt(
-                            CONSTANTS.moves[secondMove],
-                            "bot",
-                            game.id
-                        );
-                    }, 2000);
+                .then(async ([firstMove, secondMove]) => {
+                    await delay(3000);
+                    await gameApi.tilt(
+                        CONSTANTS.moves[firstMove],
+                        "bot",
+                        game.id
+                    );
+                    await delay(5000);
+                    await gameApi.tilt(
+                        CONSTANTS.moves[secondMove],
+                        "bot",
+                        game.id
+                    );
+                    await delay(2000);
+                    setBotState("pending");
                 })
                 .catch((err) => {
                     setError(err);
-                })
-                .finally(() => {
-                    setBotState("pending");
                 });
         }
     }, [game.currentPlayer, setBotState, botState]);
@@ -201,6 +225,44 @@ const Game = ({ playerName, game }) => {
                     <Text>Replace pucks</Text>
                 </TouchableOpacity>
             ) : null}
+
+            <Modal
+                animationType="slide"
+                visible={modalVisible}
+                transparent={true}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.modalView}>
+                    <Pressable
+                        style={[styles.button, styles.buttonClose]}
+                        onPress={() => closeAdvice()}
+                    >
+                        <Text>
+                            {bestMove
+                                ? bestMove
+                                : "Bot is thinking about the best move..."}
+                        </Text>
+                    </Pressable>
+                </View>
+            </Modal>
+            {game.currentPlayer == playerName && game.remainingTurns > 0 ? (
+                <TouchableOpacity
+                    style={{
+                        position: "absolute",
+                        top: 10,
+                        right: 10,
+                        zIndex: 999,
+                        backgroundColor: "white",
+                    }}
+                    onPress={() => showAdvice()}
+                >
+                    <View>
+                        <Text>Hint</Text>
+                    </View>
+                </TouchableOpacity>
+            ) : null}
         </View>
     );
 };
@@ -244,6 +306,21 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         flexDirection: "row",
         backgroundColor: "lightsalmon",
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
     },
 });
 
