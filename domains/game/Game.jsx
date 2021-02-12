@@ -27,13 +27,23 @@ const Puck = ({ x, y, pucks }) => {
     const foundPuck = pucks.find(
         (puck) => puck.position.x === x && puck.position.y === y
     );
+    const getColorStyle = (color) => {
+        switch (color) {
+            case "black":
+                return styles.black;
+            case "blue":
+                return styles.blue;
+            case "red":
+                return styles.red;
+        }
+    };
     if (foundPuck) {
         return (
             <View
                 style={[
                     styles.puck,
-                    styles.flipped,
-                    foundPuck.color === "blue" ? styles.blue : styles.red,
+                    foundPuck.flipped ? styles.flipped : null,
+                    getColorStyle(foundPuck.color),
                 ]}
             ></View>
         );
@@ -57,10 +67,6 @@ const Game = ({ playerName, game }) => {
     const [botState, setBotState] = useState();
     const [bestMove, setBestMove] = useState();
     const [modalVisible, setModalVisible] = useState(false);
-
-    const currentPlayerColor = useMemo(() => {
-        return game.players.find((player) => player.current).color;
-    }, [game.players]);
 
     const replace = useCallback(() => {
         if (replaceState === "loading") {
@@ -151,7 +157,6 @@ const Game = ({ playerName, game }) => {
                     justifyContent: "center",
                     flexDirection: "column",
                 },
-                currentPlayerColor == "red" ? styles.red : styles.blue,
             ]}
         >
             <Text>{botState}</Text>
@@ -343,36 +348,13 @@ const styles = StyleSheet.create({
     blue: {
         backgroundColor: "steelblue",
     },
-    container: {
-        flex: 1,
-        alignItems: "center",
-        alignContent: "flex-start",
-        backgroundColor: "steelblue",
-        paddingTop: 50,
-        color: "white",
+    black: {
+        backgroundColor: "black",
     },
     loading: {
         fontSize: 30,
         fontFamily: "Lobster",
         color: "white",
-    },
-    goButton: {
-        textAlign: "center",
-        fontFamily: "Lobster",
-        fontSize: 25,
-        width: 300,
-        margin: 10,
-        color: "steelblue",
-        backgroundColor: "white",
-        borderRadius: 30,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    title: {
-        fontFamily: "Lobster",
-        fontSize: 40,
-        color: "white",
-        marginBottom: 20,
     },
 });
 
