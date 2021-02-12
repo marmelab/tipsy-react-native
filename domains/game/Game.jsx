@@ -31,7 +31,7 @@ const Puck = ({ x, y, pucks }) => {
         return (
             <View
                 style={[
-                    // foundPuck.flipped ? styles.flipped : styles.puck,
+                    styles.puck,
                     styles.flipped,
                     foundPuck.color === "blue" ? styles.blue : styles.red,
                 ]}
@@ -169,9 +169,11 @@ const Game = ({ playerName, game }) => {
                     <Image
                         source={require("./img/board.webp")}
                         style={{
-                            width: 330,
-                            height: 330,
+                            width: 335,
+                            height: 335,
                             position: "absolute",
+                            right: -20,
+                            top: -20,
                         }}
                     />
                     {game.currentPlayer == playerName &&
@@ -283,6 +285,8 @@ const styles = StyleSheet.create({
         width: 20,
         height: 40,
         margin: 3,
+        alignItems: "center",
+        alignContent: "center",
     },
     obstacle: {
         flex: 1,
@@ -297,8 +301,10 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     board: {
-        width: 330,
-        height: 330,
+        width: 300,
+        height: 300,
+        marginTop: 20,
+        marginLeft: 20,
         backgroundColor: "steelblue",
     },
     game: {
@@ -323,12 +329,11 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     puck: {
+        width: 35,
+        height: 35,
         borderRadius: 50,
-        flex: 1,
     },
     flipped: {
-        borderRadius: 50,
-        flex: 1,
         borderWidth: 5,
         borderColor: "grey",
     },
