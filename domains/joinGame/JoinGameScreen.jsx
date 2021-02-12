@@ -93,19 +93,5 @@ const styles = StyleSheet.create({
         fontFamily: "Lobster",
         color: "white",
     },
-    goButton: {
-        fontFamily: "Lobster",
-        fontSize: 30,
-        height: 50,
-        width: 70,
-        margin: 50,
-        paddingLeft: 20,
-        color: "steelblue",
-        backgroundColor: "white",
-        borderRadius: 30,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    title: { fontFamily: "Lobster", fontSize: 90, color: "white" },
 });
 export default JoinGameScreen;
