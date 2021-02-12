@@ -13,7 +13,7 @@ const PlayerInputName = ({ setPlayerName }) => {
     }
     return (
         <View style={styles.container}>
-            <Text style={{ fontFamily: "Lobster", fontSize: 90 }}>Tipsy</Text>
+            <Text style={styles.title}>Tipsy</Text>
             <TextInput
                 placeholder="Player name"
                 placeholderTextColor="white"
@@ -25,7 +25,6 @@ const PlayerInputName = ({ setPlayerName }) => {
                 title="Go"
                 disabled={!playerName || playerName === "bot"}
                 onPress={() => setPlayerName(playerName)}
-                style={{}}
             >
                 <Text style={styles.goButton}>Go</Text>
             </Pressable>
@@ -67,6 +66,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
+    title: { fontFamily: "Lobster", fontSize: 90, color: "white" },
 });
 
 export default PlayerInputName;

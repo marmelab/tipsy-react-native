@@ -11,7 +11,11 @@ const Stack = createStackNavigator();
 const App = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator
+                screenOptions={{
+                    headerShown: false,
+                }}
+            >
                 <Stack.Screen name="Home" component={MainScreen} />
                 <Stack.Screen name="NewGame" component={NewGameScreen} />
                 <Stack.Screen name="JoinGame" component={JoinGameScreen} />
