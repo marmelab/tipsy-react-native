@@ -31,7 +31,8 @@ const Puck = ({ x, y, pucks }) => {
         return (
             <View
                 style={[
-                    foundPuck.flipped ? styles.flipped : styles.puck,
+                    // foundPuck.flipped ? styles.flipped : styles.puck,
+                    styles.flipped,
                     foundPuck.color === "blue" ? styles.blue : styles.red,
                 ]}
             ></View>
@@ -143,22 +144,19 @@ const Game = ({ playerName, game }) => {
     }
     return (
         <View
-            style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-            }}
+            style={[
+                {
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                },
+                currentPlayerColor == "red" ? styles.red : styles.blue,
+            ]}
         >
             <Text>{botState}</Text>
             <GameStatus game={game} playerName={playerName}></GameStatus>
-            <View
-                style={
-                    currentPlayerColor == "red"
-                        ? styles.gameRed
-                        : styles.gameBlue
-                }
-            >
+            <View style={styles.game}>
                 {game.currentPlayer == playerName && game.remainingTurns > 0 ? (
                     <TouchableOpacity
                         style={styles.button}
@@ -303,19 +301,11 @@ const styles = StyleSheet.create({
         height: 330,
         backgroundColor: "steelblue",
     },
-    gameBlue: {
+    game: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",
-        backgroundColor: "lightseagreen",
-    },
-    gameRed: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "row",
-        backgroundColor: "lightsalmon",
     },
     modalView: {
         margin: 20,
@@ -337,14 +327,47 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     flipped: {
-        borderWidth: 2,
+        borderRadius: 50,
+        flex: 1,
+        borderWidth: 5,
         borderColor: "grey",
     },
     red: {
         backgroundColor: "lightsalmon",
     },
     blue: {
-        backgroundColor: "lightseagreen",
+        backgroundColor: "steelblue",
+    },
+    container: {
+        flex: 1,
+        alignItems: "center",
+        alignContent: "flex-start",
+        backgroundColor: "steelblue",
+        paddingTop: 50,
+        color: "white",
+    },
+    loading: {
+        fontSize: 30,
+        fontFamily: "Lobster",
+        color: "white",
+    },
+    goButton: {
+        textAlign: "center",
+        fontFamily: "Lobster",
+        fontSize: 25,
+        width: 300,
+        margin: 10,
+        color: "steelblue",
+        backgroundColor: "white",
+        borderRadius: 30,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    title: {
+        fontFamily: "Lobster",
+        fontSize: 40,
+        color: "white",
+        marginBottom: 20,
     },
 });
 
