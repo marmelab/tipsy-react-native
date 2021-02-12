@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Text, View, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 import PendingGames from "./PendingGames.jsx";
 import gameApi from "../../api/GameApi.jsx";
@@ -58,7 +58,7 @@ const JoinGameScreen = ({ route, navigation }) => {
             );
         case "loaded":
             return (
-                <View>
+                <View style={styles.container}>
                     <PendingGames
                         pendingGames={pendingGames}
                         playersName={playerName}
@@ -68,8 +68,8 @@ const JoinGameScreen = ({ route, navigation }) => {
             );
         default:
             return (
-                <View>
-                    <ActivityIndicator size="large" />
+                <View style={styles.container}>
+                    <Text style={styles.loading}>Loading pending games...</Text>
                 </View>
             );
     }
@@ -79,4 +79,33 @@ JoinGameScreen.propTypes = {
     route: PropTypes.object.isRequired,
     navigation: PropTypes.object.isRequired,
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "steelblue",
+        color: "white",
+    },
+    loading: {
+        fontSize: 30,
+        fontFamily: "Lobster",
+        color: "white",
+    },
+    goButton: {
+        fontFamily: "Lobster",
+        fontSize: 30,
+        height: 50,
+        width: 70,
+        margin: 50,
+        paddingLeft: 20,
+        color: "steelblue",
+        backgroundColor: "white",
+        borderRadius: 30,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    title: { fontFamily: "Lobster", fontSize: 90, color: "white" },
+});
 export default JoinGameScreen;
