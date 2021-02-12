@@ -16,10 +16,34 @@ const App = () => {
                     headerShown: false,
                 }}
             >
-                <Stack.Screen name="Home" component={MainScreen} />
-                <Stack.Screen name="NewGame" component={NewGameScreen} />
-                <Stack.Screen name="JoinGame" component={JoinGameScreen} />
-                <Stack.Screen name="Game" component={GameScreen} />
+                <Stack.Screen
+                    name="Home"
+                    component={MainScreen}
+                    screenOptions={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="NewGame"
+                    component={NewGameScreen}
+                    screenOptions={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="JoinGame"
+                    component={JoinGameScreen}
+                    screenOptions={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="Game"
+                    component={GameScreen}
+                    screenOptions={{
+                        headerShown: false,
+                    }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );
