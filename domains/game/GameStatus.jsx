@@ -14,12 +14,16 @@ const GameStatus = ({ game, playerName }) => {
                 return styles.red;
         }
     };
+    console.dir(game);
     return (
         <View style={styles.container}>
             <Text style={[styles.text, getColorStyle()]}>
                 {playerName == game.currentPlayer
                     ? "Your turn!"
                     : game.currentPlayer + " turn!"}
+            </Text>
+            <Text style={[styles.text, getColorStyle()]}>
+                {game.remainingTurns}
             </Text>
         </View>
     );

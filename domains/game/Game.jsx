@@ -167,7 +167,14 @@ const Game = ({ playerName, game }) => {
                         style={styles.button}
                         onPress={() => tilt("west")}
                     >
-                        <Text>Left</Text>
+                        <Text
+                            style={{
+                                paddingTop: 150,
+                                height: 300,
+                            }}
+                        >
+                            ◄
+                        </Text>
                     </TouchableOpacity>
                 ) : null}
                 <View source={boardImage} style={styles.board}>
@@ -175,7 +182,7 @@ const Game = ({ playerName, game }) => {
                         source={require("./img/board.webp")}
                         style={{
                             width: 335,
-                            height: 335,
+                            height: 320,
                             position: "absolute",
                             right: -20,
                             top: -20,
@@ -187,7 +194,15 @@ const Game = ({ playerName, game }) => {
                             style={styles.button}
                             onPress={() => tilt("north")}
                         >
-                            <Text>Up</Text>
+                            <Text
+                                style={{
+                                    textAlign: "center",
+                                    paddingBottom: 50,
+                                    marginTop: -60,
+                                }}
+                            >
+                                ▲
+                            </Text>
                         </TouchableOpacity>
                     ) : null}
                     {boardObstacles.map((row, y) => {
@@ -220,7 +235,13 @@ const Game = ({ playerName, game }) => {
                             style={styles.button}
                             onPress={() => tilt("south")}
                         >
-                            <Text>Down</Text>
+                            <Text
+                                style={{
+                                    textAlign: "center",
+                                }}
+                            >
+                                ▼
+                            </Text>
                         </TouchableOpacity>
                     ) : null}
                 </View>
@@ -230,7 +251,14 @@ const Game = ({ playerName, game }) => {
                         style={styles.button}
                         onPress={() => tilt("east")}
                     >
-                        <Text>Right</Text>
+                        <Text
+                            style={{
+                                paddingTop: 150,
+                                height: 300,
+                            }}
+                        >
+                            ►
+                        </Text>
                     </TouchableOpacity>
                 ) : null}
             </View>
@@ -334,8 +362,8 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     puck: {
-        width: 35,
-        height: 35,
+        width: 32,
+        height: 32,
         borderRadius: 50,
     },
     flipped: {
